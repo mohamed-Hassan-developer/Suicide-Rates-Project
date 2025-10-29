@@ -145,6 +145,8 @@ elif page == 'Suicide Report':
         df_filtered = df_filtered[df_filtered.country == country]
 
 
+
+
     if Gender != 'Choose':
 
         df_filtered = df_filtered[df_filtered.sex == Gender]
@@ -154,3 +156,23 @@ elif page == 'Suicide Report':
         df_filtered = df_filtered[df_filtered.age == age_group]
 
     st.dataframe(df_filtered)
+
+    if (country != 'All Countries' and age_group == 'All Age Groups') or (country== 'All Countries' and age_group != 'All Age Groups'):
+
+        df_sorted=df_filtered.groupby(['country','age'])['suicides_no'].sum().sort_values(ascending=False).reset_index().head(30)
+        st.plotly_chart(px.bar(data_frame=df_sorted,x='country',y='suicides_no',color='age',barmode='group',text_auto=True),key="chart4")
+    
+    if (Gender != 'Choose' and age_group== 'All Age Groups') or (Gender == 'Choose' and age_group != 'All Age Groups'):
+        df_sorted_gender=df_filtered.groupby(['sex','age'])['suicides_no'].sum().sort_values(ascending=False).reset_index().head(30)
+        st.plotly_chart(px.bar(data_frame=df_sorted_gender,x='sex',y='suicides_no',color='age',barmode='group',text_auto=True),key="chart5")
+
+        df_sorted_year_gender=df_filtered.groupby(['year','sex'])['suicides_no'].sum().reset_index()
+        st.plotly_chart(px.line(data_frame=df_sorted_year_gender,x='year',y='suicides_no',color='sex'),key="chart6")
+
+    if age_group != 'All Age Groups':
+
+        df_sorted_year_age=df_filtered.groupby(['year','age'])['suicides_no'].sum().reset_index()
+        st.plotly_chart(px.line(data_frame=df_sorted_year_age,x='year',y='suicides_no',color='age'),key="chart8")
+
+
+
